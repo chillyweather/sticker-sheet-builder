@@ -4,6 +4,7 @@ import { getComponentProps } from "./getComponentProps";
 import { getMainComponent } from "./getMainComponent";
 import buildBasicGrid from "./buildBasicGrid";
 import buildSizes from "./buildSizes";
+import buildBinariesGrids from "./buildBinariesGrid";
 
 const loadFonts = async (font?: any) => {
   await figma.loadFontAsync(
@@ -36,10 +37,16 @@ export default async function buildOneSticker(
     defaultVariant = mainComponent.defaultVariant;
   }
   const sizeFrame = buildSizes(defaultVariant, sizeProps);
+  const binaryFrames = buildBinariesGrids(defaultVariant, binaryProps);
   const basicGrid = buildBasicGrid(defaultVariant, stateProps, typeProps);
 
   const stickerFrame = buildStickerFrame();
   stickerFrame.appendChild(sizeFrame);
+  if (binaryFrames.length) {
+    for (const frame of binaryFrames) {
+      stickerFrame.appendChild(frame);
+    }
+  }
   if (basicGrid) stickerFrame.appendChild(basicGrid);
 }
 function buildStickerFrame() {
