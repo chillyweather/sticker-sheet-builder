@@ -1,0 +1,10 @@
+{
+  "api": "1.0.0",
+  "editorType": [
+    "figma"
+  ],
+  "id": "sticker-sheet-builder",
+  "name": "Sticker sheet builder",
+  "main": "build/main.js",
+  "ui": "build/ui.js"
+}
