@@ -9,6 +9,7 @@ export function getProps(componentProps: any) {
   const binaryOptions = ["true", "false", "on", "off"];
   const stateOptions = ["hover", "idle", "pressed"];
   const typeOptions = ["primary", "secondary"];
+  //test
 
   for (const prop in variantProps) {
     const lowerProp = prop.toLowerCase();
