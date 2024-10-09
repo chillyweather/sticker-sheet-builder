@@ -1,7 +1,7 @@
 import { on, showUI } from "@create-figma-plugin/utilities";
 
 import { GetHandler } from "./types";
-import getOneElementVariants from "./getOneElementVariants";
+import buildOneSticker from "./getOneElementVariants";
 
 export default function () {
   on<GetHandler>("CLOSE", function () {
@@ -13,7 +13,7 @@ export default function () {
         node.type === "COMPONENT_SET" ||
         node.type === "INSTANCE"
       ) {
-        getOneElementVariants(node);
+        buildOneSticker(node);
       } else {
         figma.notify("Please select an instance, component, or component set", {
           error: true,

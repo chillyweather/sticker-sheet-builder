@@ -1,3 +1,4 @@
+import { createSectionTitle, createElementLabelText } from "./textUtils";
 import { buildAutoLayoutFrame, setVariantProps } from "./utilityFunctions";
 export default function buildBasicGrid(
   node: any,
@@ -53,10 +54,7 @@ function buildStates(
     0,
     20
   );
-  const title = figma.createText();
-  title.fontSize = 14;
-  title.fontName = { family: "Inter", style: "Medium" };
-  title.characters = capitalizeFirstLetter(currentType);
+  const title = createSectionTitle(currentType);
   stateWithTitle.appendChild(title);
   const elementsFrame = createNormalizedFrame(
     "elements-frame",
@@ -77,8 +75,7 @@ function buildStates(
     const cloNode = node.clone();
     setVariantProps(cloNode, statePropName, state);
     nodeWithLabel.appendChild(cloNode);
-    const label = figma.createText();
-    label.characters = state;
+    const label = createElementLabelText(state);
     nodeWithLabel.appendChild(label);
     nodeWithLabel.counterAxisAlignItems = "CENTER";
     elementsFrame.appendChild(nodeWithLabel);
@@ -91,10 +88,7 @@ function normalizeFrame(typeFrame: FrameNode) {
   typeFrame.clipsContent = false;
 }
 
-function capitalizeFirstLetter(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-function createNormalizedFrame(
+export function createNormalizedFrame(
   name: string,
   direction: "VERTICAL" | "HORIZONTAL",
   paddingHorizontal: number,
