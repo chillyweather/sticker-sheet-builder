@@ -7,7 +7,7 @@ export default function buildSizes(
   [sizePropName, { variantOptions: sizeOptions }]: any
 ) {
   const workingNode = node.createInstance();
-  const sizeFrame = createNormalizedFrame("size-frame", "VERTICAL", 0, 0, 36);
+  const sizeFrame = createNormalizedFrame("size-frame", "VERTICAL", 0, 0, 20);
   const title = createSectionTitle("size");
   sizeFrame.appendChild(title);
   const elementsFrame = createNormalizedFrame(

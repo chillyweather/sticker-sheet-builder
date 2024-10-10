@@ -12,7 +12,7 @@ export default function buildBinariesGrids(node: any, binaryProps: any[]) {
       "VERTICAL",
       0,
       0,
-      36
+      20
     );
     const title = createSectionTitle(propName);
     binaryFrame.appendChild(title);
