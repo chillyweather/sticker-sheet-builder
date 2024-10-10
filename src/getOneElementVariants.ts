@@ -5,6 +5,7 @@ import { getMainComponent } from "./getMainComponent";
 import buildBasicGrid from "./buildBasicGrid";
 import buildSizes from "./buildSizes";
 import buildBinariesGrids from "./buildBinariesGrid";
+import buildOtherVariants from "./buildOterVariants";
 
 const loadFonts = async (font?: any) => {
   await figma.loadFontAsync(
@@ -39,6 +40,11 @@ export default async function buildOneSticker(
   const sizeFrame = buildSizes(defaultVariant, sizeProps);
   const binaryFrames = buildBinariesGrids(defaultVariant, binaryProps);
   const basicGrid = buildBasicGrid(defaultVariant, stateProps, typeProps);
+  let otherVariantsFrame: FrameNode | undefined;
+
+  if (otherProps.length && basicGrid) {
+    otherVariantsFrame = buildOtherVariants(basicGrid, otherProps);
+  }
 
   const stickerFrame = buildStickerFrame();
   stickerFrame.appendChild(sizeFrame);
@@ -47,7 +53,11 @@ export default async function buildOneSticker(
       stickerFrame.appendChild(frame);
     }
   }
-  if (basicGrid) stickerFrame.appendChild(basicGrid);
+  if (otherVariantsFrame) {
+    stickerFrame.appendChild(otherVariantsFrame);
+  } else {
+    if (basicGrid) stickerFrame.appendChild(basicGrid);
+  }
 }
 function buildStickerFrame() {
   const frame = buildAutoLayoutFrame("REPLACE ME!!!", "VERTICAL", 60, 60, 60);

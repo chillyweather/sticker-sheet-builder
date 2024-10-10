@@ -1,5 +1,5 @@
 import { setVariantProps } from "./utilityFunctions";
-import { createSectionTitle, createElementLabelText } from "./textUtils";
+import { createSubSectionTitle, createElementLabelText } from "./textUtils";
 import { createNormalizedFrame } from "./buildBasicGrid";
 export default function buildBinariesGrids(node: any, binaryProps: any[]) {
   const binaryPropertyFrames: FrameNode[] = [];
@@ -14,7 +14,7 @@ export default function buildBinariesGrids(node: any, binaryProps: any[]) {
       0,
       20
     );
-    const title = createSectionTitle(propName);
+    const title = createSubSectionTitle(propName);
     binaryFrame.appendChild(title);
     const elementsFrame = createNormalizedFrame(
       "elements-frame",

@@ -1,6 +1,6 @@
 import { createNormalizedFrame } from "./buildBasicGrid";
 import { setVariantProps } from "./utilityFunctions";
-import { createSectionTitle, createElementLabelText } from "./textUtils";
+import { createSubSectionTitle, createElementLabelText } from "./textUtils";
 
 export default function buildSizes(
   node: ComponentNode,
@@ -8,7 +8,7 @@ export default function buildSizes(
 ) {
   const workingNode = node.createInstance();
   const sizeFrame = createNormalizedFrame("size-frame", "VERTICAL", 0, 0, 20);
-  const title = createSectionTitle("size");
+  const title = createSubSectionTitle("size");
   sizeFrame.appendChild(title);
   const elementsFrame = createNormalizedFrame(
     "elements-frame",

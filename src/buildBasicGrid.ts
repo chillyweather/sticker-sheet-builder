@@ -1,4 +1,4 @@
-import { createSectionTitle, createElementLabelText } from "./textUtils";
+import { createSubSectionTitle, createElementLabelText } from "./textUtils";
 import { buildAutoLayoutFrame, setVariantProps } from "./utilityFunctions";
 export default function buildBasicGrid(
   node: any,
@@ -54,7 +54,7 @@ function buildStates(
     0,
     20
   );
-  const title = createSectionTitle(currentType);
+  const title = createSubSectionTitle(currentType);
   stateWithTitle.appendChild(title);
   const elementsFrame = createNormalizedFrame(
     "elements-frame",
