@@ -6,6 +6,7 @@ import buildBasicGrid from "./buildBasicGrid";
 import buildSizes from "./buildSizes";
 import buildBinariesGrids from "./buildBinariesGrid";
 import buildOtherVariants from "./buildOterVariants";
+import buildHeader from "./buildHeader";
 
 const loadFonts = async (font?: any) => {
   await figma.loadFontAsync(
@@ -27,6 +28,7 @@ export default async function buildOneSticker(
     figma.notify("MAIN COMPONENT IS NOT FOUND", { error: true });
     return null;
   }
+
   const componentProps = getComponentProps(mainComponent);
   const { stateProps, typeProps, sizeProps, binaryProps, otherProps } =
     getProps(componentProps);
@@ -37,6 +39,12 @@ export default async function buildOneSticker(
   } else {
     defaultVariant = mainComponent.defaultVariant;
   }
+
+  const stickerFrame = buildStickerFrame();
+  const headerFrame = buildHeader();
+
+  stickerFrame.appendChild(headerFrame);
+  headerFrame.layoutSizingHorizontal = "FILL";
   const sizeFrame = buildSizes(defaultVariant, sizeProps);
   const binaryFrames = buildBinariesGrids(defaultVariant, binaryProps);
   const basicGrid = buildBasicGrid(defaultVariant, stateProps, typeProps);
@@ -46,7 +54,6 @@ export default async function buildOneSticker(
     otherVariantsFrame = buildOtherVariants(basicGrid, otherProps);
   }
 
-  const stickerFrame = buildStickerFrame();
   stickerFrame.appendChild(sizeFrame);
   if (binaryFrames.length) {
     for (const frame of binaryFrames) {
@@ -61,5 +68,7 @@ export default async function buildOneSticker(
 }
 function buildStickerFrame() {
   const frame = buildAutoLayoutFrame("REPLACE ME!!!", "VERTICAL", 60, 60, 60);
+  frame.paddingTop = 24;
+  frame.cornerRadius = 40;
   return frame;
 }
