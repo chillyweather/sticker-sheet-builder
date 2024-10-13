@@ -1,7 +1,7 @@
 import { on, showUI } from "@create-figma-plugin/utilities";
 
 import { GetHandler } from "./types";
-import buildOneSticker from "./getOneElementVariants";
+import buildOneSticker from "./getOneSticker";
 
 export default function () {
   on<GetHandler>("CLOSE", function () {
