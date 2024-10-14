@@ -2,35 +2,59 @@ import { createSubSectionTitle, createElementLabelText } from "./textUtils";
 import { buildAutoLayoutFrame, setVariantProps } from "./utilityFunctions";
 export default function buildBasicGrid(
   node: any,
-  [statePropName, { variantOptions: stateOptions }]: any,
-  [typePropName, { variantOptions: typeOptions }]: any
+  firstProps: any[] | null,
+  secondProps: any[] | null
 ) {
-  if (!node) return;
-  const basicGrid = buildTypes(
-    typePropName,
-    typeOptions,
-    statePropName,
-    stateOptions,
-    node
-  );
-  return basicGrid;
+  if (firstProps?.length && secondProps?.length) {
+    const [firstPropName, { variantOptions: firstOptions }] = firstProps;
+    const [secondPropName, { variantOptions: secondOptions }] = secondProps;
+
+    if (!node) return;
+    const basicGrid = buildGrid(
+      firstPropName,
+      firstOptions,
+      secondPropName,
+      secondOptions,
+      node
+    );
+    return basicGrid;
+  } else {
+    const currentProp = getNonEmptyProp(firstProps, secondProps);
+    if (!currentProp) return;
+    const workingNode = node.createInstance();
+    const [currentPropName, { variantOptions }] = currentProp;
+    const basicGrid = buildStates(
+      null,
+      null,
+      currentPropName,
+      variantOptions,
+      node
+    );
+    workingNode.remove;
+    return basicGrid;
+  }
 }
 
-function buildTypes(
-  typePropName: string,
-  typeOptions: string[],
-  statePropName: string,
-  stateOptions: string[],
+function getNonEmptyProp(firstProps: any[] | null, secondProps: any[] | null) {
+  if (firstProps && firstProps.length) return firstProps;
+  return secondProps;
+}
+
+function buildGrid(
+  firstPropName: string,
+  firstOptions: string[],
+  secondPropName: string,
+  secondOptions: string[],
   node: any
 ) {
   const workingNode = node.createInstance();
   const typeFrame = createNormalizedFrame("type-frame", "VERTICAL", 0, 0, 36);
-  for (const type of typeOptions) {
+  for (const type of firstOptions) {
     const stateFrame = buildStates(
-      typePropName,
+      firstPropName,
       type,
-      statePropName,
-      stateOptions,
+      secondPropName,
+      secondOptions,
       workingNode
     );
     typeFrame.appendChild(stateFrame);
@@ -40,13 +64,14 @@ function buildTypes(
 }
 
 function buildStates(
-  typePropName: string,
-  currentType: string,
-  statePropName: string,
-  stateOptions: string[],
+  firstPropName: string | null,
+  currentFirstProp: string | null,
+  secondPropName: string,
+  secondOptions: string[],
   node: any
 ) {
-  setVariantProps(node, typePropName, currentType);
+  if (firstPropName && currentFirstProp)
+    setVariantProps(node, firstPropName, currentFirstProp);
   const stateWithTitle = createNormalizedFrame(
     "state-frame",
     "VERTICAL",
@@ -54,8 +79,10 @@ function buildStates(
     0,
     20
   );
-  const title = createSubSectionTitle(currentType);
-  stateWithTitle.appendChild(title);
+  const title = currentFirstProp
+    ? createSubSectionTitle(currentFirstProp)
+    : null;
+  if (title) stateWithTitle.appendChild(title);
   const elementsFrame = createNormalizedFrame(
     "elements-frame",
     "HORIZONTAL",
@@ -64,7 +91,7 @@ function buildStates(
     16
   );
   stateWithTitle.appendChild(elementsFrame);
-  for (const state of stateOptions) {
+  for (const state of secondOptions) {
     const nodeWithLabel = createNormalizedFrame(
       "one-state-frame",
       "VERTICAL",
@@ -73,7 +100,7 @@ function buildStates(
       8
     );
     const cloNode = node.clone();
-    setVariantProps(cloNode, statePropName, state);
+    setVariantProps(cloNode, secondPropName, state);
     nodeWithLabel.appendChild(cloNode);
     const label = createElementLabelText(state);
     nodeWithLabel.appendChild(label);
@@ -83,9 +110,9 @@ function buildStates(
   return stateWithTitle;
 }
 
-function normalizeFrame(typeFrame: FrameNode) {
-  typeFrame.fills = [];
-  typeFrame.clipsContent = false;
+function normalizeFrame(frame: FrameNode) {
+  frame.fills = [];
+  frame.clipsContent = false;
 }
 
 export function createNormalizedFrame(

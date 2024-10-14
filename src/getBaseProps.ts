@@ -1,43 +1,39 @@
-export function getProps(componentProps: any) {
-  const stateProps: any[] = [];
-  const typeProps: any[] = [];
-  const sizeProps: any[] = [];
-  const binaryProps: any[] = [];
-  const otherProps: any[] = [];
-
-  const variantProps = componentProps.variant;
-  const binaryOptions = ["true", "false", "on", "off"];
-  const stateOptions = ["hover", "idle", "pressed"];
-  const typeOptions = ["primary", "secondary"];
-  //test
-
-  for (const prop in variantProps) {
-    const lowerProp = prop.toLowerCase();
-    const variantOptions = variantProps[prop].variantOptions.map(
-      (option: any) => option.toLowerCase()
-    );
-
-    if (lowerProp === "state") {
-      stateProps.push(prop), stateProps.push(variantProps[prop]);
-    } else if (lowerProp === "size") {
-      sizeProps.push(prop), sizeProps.push(variantProps[prop]);
-    } else if (
-      variantOptions.some((option: string) => stateOptions.includes(option))
-    ) {
-      stateProps.push(prop), stateProps.push(variantProps[prop]);
-    } else if (
-      variantOptions.some((option: string) => typeOptions.includes(option))
-    ) {
-      typeProps.push(prop), typeProps.push(variantProps[prop]);
-    } else if (
-      variantOptions.length === 2 &&
-      (binaryOptions.includes(variantOptions[0]) ||
-        binaryOptions.includes(variantOptions[1]))
-    ) {
-      binaryProps.push([prop, variantProps[prop]]);
-    } else {
-      otherProps.push([prop, variantProps[prop]]);
-    }
+export function getBaseProps(
+  typeProps: any[],
+  stateProps: any[],
+  otherProps: any[]
+) {
+  interface BaseProps {
+    firstProp: any[] | null;
+    secondProp: any[] | null;
+    otherProps: any[] | null;
   }
-  return { stateProps, typeProps, sizeProps, binaryProps, otherProps };
+
+  const baseProps: BaseProps = {
+    firstProp: null,
+    secondProp: null,
+    otherProps: null,
+  };
+
+  if (!(typeProps.length || stateProps.length || otherProps.length))
+    return null;
+
+  if (typeProps.length && stateProps.length) {
+    baseProps.firstProp = typeProps;
+    baseProps.secondProp = stateProps;
+    baseProps.otherProps = otherProps;
+  } else if (stateProps.length) {
+    baseProps.firstProp = otherProps.length ? otherProps[0] : null;
+    baseProps.secondProp = stateProps;
+    baseProps.otherProps = otherProps.slice(1) ?? null;
+  } else if (typeProps.length) {
+    baseProps.firstProp = typeProps;
+    baseProps.secondProp = otherProps.length ? otherProps[0] : null;
+    baseProps.otherProps = otherProps.slice(1) ?? null;
+  } else if (otherProps.length) {
+    baseProps.firstProp = otherProps.slice(1, 2) ?? null;
+    baseProps.secondProp = otherProps[0];
+    baseProps.otherProps = otherProps.slice(2) ?? null;
+  }
+  return baseProps;
 }
