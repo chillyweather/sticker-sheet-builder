@@ -3,6 +3,10 @@ export function getBaseProps(
   stateProps: any[],
   otherProps: any[]
 ) {
+  console.log("typeProps", typeProps);
+  console.log("stateProps", stateProps);
+  console.log("otherProps", otherProps);
+
   interface BaseProps {
     firstProp: any[] | null;
     secondProp: any[] | null;
@@ -31,7 +35,7 @@ export function getBaseProps(
     baseProps.secondProp = otherProps.length ? otherProps[0] : null;
     baseProps.otherProps = otherProps.slice(1) ?? null;
   } else if (otherProps.length) {
-    baseProps.firstProp = otherProps.slice(1, 2) ?? null;
+    baseProps.firstProp = otherProps[1] ?? null;
     baseProps.secondProp = otherProps[0];
     baseProps.otherProps = otherProps.slice(2) ?? null;
   }

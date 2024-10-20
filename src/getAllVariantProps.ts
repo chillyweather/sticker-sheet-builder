@@ -17,10 +17,16 @@ export function getProps(componentProps: any) {
       (option: any) => option.toLowerCase()
     );
 
-    if (lowerProp === "state") {
-      stateProps.push(prop), stateProps.push(variantProps[prop]);
-    } else if (lowerProp === "size") {
+    if (lowerProp === "size") {
       sizeProps.push(prop), sizeProps.push(variantProps[prop]);
+    } else if (
+      variantOptions.length === 2 &&
+      (binaryOptions.includes(variantOptions[0]) ||
+        binaryOptions.includes(variantOptions[1]))
+    ) {
+      binaryProps.push([prop, variantProps[prop]]);
+    } else if (lowerProp === "state") {
+      stateProps.push(prop), stateProps.push(variantProps[prop]);
     } else if (
       variantOptions.some((option: string) => stateOptions.includes(option))
     ) {
@@ -29,12 +35,6 @@ export function getProps(componentProps: any) {
       variantOptions.some((option: string) => typeOptions.includes(option))
     ) {
       typeProps.push(prop), typeProps.push(variantProps[prop]);
-    } else if (
-      variantOptions.length === 2 &&
-      (binaryOptions.includes(variantOptions[0]) ||
-        binaryOptions.includes(variantOptions[1]))
-    ) {
-      binaryProps.push([prop, variantProps[prop]]);
     } else {
       allOtherProps.push([prop, variantProps[prop]]);
     }

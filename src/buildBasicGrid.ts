@@ -25,12 +25,12 @@ export default function buildBasicGrid(
     const [currentPropName, { variantOptions }] = currentProp;
     const basicGrid = buildStates(
       null,
-      null,
+      currentPropName,
       currentPropName,
       variantOptions,
-      node
+      workingNode
     );
-    workingNode.remove;
+    workingNode.remove();
     return basicGrid;
   }
 }
@@ -100,7 +100,7 @@ function buildStates(
       8
     );
     const cloNode = node.clone();
-    setVariantProps(cloNode, secondPropName, state);
+    setVariantProps(cloNode, secondPropName, state ?? secondOptions[0]);
     nodeWithLabel.appendChild(cloNode);
     const label = createElementLabelText(state);
     nodeWithLabel.appendChild(label);

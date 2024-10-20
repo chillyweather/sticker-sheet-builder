@@ -8,6 +8,7 @@ import buildBinariesGrids from "./buildBinariesGrid";
 import buildOtherVariants from "./buildOterVariants";
 import buildHeader from "./buildHeader";
 import { getBaseProps } from "./getBaseProps";
+import { placeResultTopRight } from "./utilityFunctions";
 
 const loadFonts = async (font?: any) => {
   await figma.loadFontAsync(
@@ -23,6 +24,9 @@ export default async function buildOneSticker(
   node: InstanceNode | ComponentNode | ComponentSetNode
 ) {
   await loadFonts();
+
+  const stickerSheetPage = findOrAddStickerSheetPage();
+
   const mainComponent = await getMainComponent(node);
 
   if (!mainComponent) {
@@ -34,7 +38,6 @@ export default async function buildOneSticker(
   const { stateProps, typeProps, sizeProps, binaryProps, allOtherProps } =
     getProps(componentProps);
   const baseProps = getBaseProps(typeProps, stateProps, allOtherProps);
-  console.log("baseProps", baseProps);
 
   let defaultVariant: ComponentNode;
   if (mainComponent.type === "COMPONENT") {
@@ -83,6 +86,9 @@ export default async function buildOneSticker(
   } else {
     if (basicGrid) stickerFrame.appendChild(basicGrid);
   }
+
+  stickerSheetPage.appendChild(stickerFrame);
+  placeResultTopRight(stickerFrame, stickerSheetPage);
 }
 
 function buildStickerFrame() {
@@ -90,4 +96,17 @@ function buildStickerFrame() {
   frame.paddingTop = 24;
   frame.cornerRadius = 40;
   return frame;
+}
+
+function findOrAddStickerSheetPage() {
+  const pages = figma.root.children;
+
+  const found = pages.find((page) => page.name === "Stickersheet");
+  if (!found) {
+    let stickerSheetPage = figma.createPage();
+    figma.root.insertChild(0, stickerSheetPage);
+    stickerSheetPage.name = "Stickersheet";
+    return stickerSheetPage;
+  }
+  return found;
 }

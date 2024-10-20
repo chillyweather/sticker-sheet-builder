@@ -1,3 +1,5 @@
+import { computeMaximumBounds } from "@create-figma-plugin/utilities";
+
 export async function findMasterComponent(node: InstanceNode) {
   const immediateMaster = await node.getMainComponentAsync();
   const masterParent = immediateMaster?.parent;
@@ -9,7 +11,8 @@ export async function findMasterComponent(node: InstanceNode) {
 export function setVariantProps(
   node: InstanceNode,
   name: string,
-  value: string
+  value: string,
+  fallbackValue?: string
 ) {
   const propList = node.componentProperties;
   for (const property in propList) {
@@ -44,4 +47,16 @@ export function buildAutoLayoutFrame(
   frame.counterAxisSizingMode = "AUTO";
   frame.name = name;
   return frame;
+}
+
+export function placeResultTopRight(
+  resultFrame: FrameNode,
+  page: PageNode = figma.currentPage
+) {
+  const bounds = computeMaximumBounds(Array.from(page.children));
+  page.appendChild(resultFrame);
+  resultFrame.x = bounds[1].x + 100;
+  resultFrame.y = bounds[0].y;
+
+  figma.viewport.scrollAndZoomIntoView([resultFrame]);
 }
