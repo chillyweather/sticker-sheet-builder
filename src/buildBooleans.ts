@@ -1,14 +1,16 @@
 import { createNormalizedFrame } from "./buildBasicGrid";
 import { createElementLabelText, createSubSectionTitle } from "./textUtils";
 import { setBooleanProps } from "./utilityFunctions";
-export async function buildBooleans(
+export function buildBooleans(
+  mainComponent: ComponentNode | ComponentSetNode,
   defaultVariant: ComponentNode,
   booleanProps: any
 ) {
   if (!Object.keys(booleanProps).length) return;
-  const workingNode = defaultVariant.createInstance();
 
-  const allVariantsFrame = createNormalizedFrame(
+  let workingNode: InstanceNode;
+
+  const allBooleansFrame = createNormalizedFrame(
     "all-booleans-frame",
     "VERTICAL",
     0,
@@ -17,6 +19,19 @@ export async function buildBooleans(
   );
 
   for (const prop in booleanProps) {
+    const isProp = isPropertyOnThisVariant(prop, defaultVariant);
+    workingNode = defaultVariant.createInstance();
+
+    if (!isProp && mainComponent.type === "COMPONENT_SET") {
+      const found = mainComponent.findChild((node) => {
+        if (node.type !== "COMPONENT") return false;
+        const hasProperty = isPropertyOnThisVariant(prop, node);
+        return hasProperty;
+      });
+
+      if (found) workingNode = (found as ComponentNode).createInstance();
+    }
+
     const cleanPropName = prop.split("#")[0];
     const oneBooleanFrame = createNormalizedFrame(
       `${cleanPropName}-frame`,
@@ -51,10 +66,23 @@ export async function buildBooleans(
       "on"
     );
     elementsFrame.appendChild(nodeWithLabelTrue);
-    allVariantsFrame.appendChild(oneBooleanFrame);
+    allBooleansFrame.appendChild(oneBooleanFrame);
+    workingNode.remove();
   }
-  workingNode.remove();
-  return allVariantsFrame;
+
+  return allBooleansFrame;
+}
+
+function isPropertyOnThisVariant(
+  propertyName: string,
+  node: InstanceNode | ComponentNode | FrameNode
+) {
+  for (const element of node.children) {
+    if (element.componentPropertyReferences?.visible === propertyName) {
+      return true;
+    }
+  }
+  return false;
 }
 function buildBooleanStateFrame(
   workingNode: InstanceNode,

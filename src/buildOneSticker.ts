@@ -62,7 +62,11 @@ export default async function buildOneSticker(
     ? buildBinariesGrids(defaultVariant, binaryProps)
     : null;
 
-  buildBooleans(defaultVariant, booleanProps);
+  const booleansFrame = buildBooleans(
+    mainComponent,
+    defaultVariant,
+    booleanProps
+  );
 
   const basicGrid = baseProps
     ? buildBasicGrid(
@@ -85,6 +89,9 @@ export default async function buildOneSticker(
       stickerFrame.appendChild(frame);
     }
   }
+
+  if (booleansFrame) stickerFrame.appendChild(booleansFrame);
+
   if (otherVariantsFrame) {
     stickerFrame.appendChild(otherVariantsFrame);
   } else {

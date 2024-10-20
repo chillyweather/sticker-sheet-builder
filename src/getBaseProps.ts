@@ -3,10 +3,6 @@ export function getBaseProps(
   stateProps: any[],
   otherProps: any[]
 ) {
-  console.log("typeProps", typeProps);
-  console.log("stateProps", stateProps);
-  console.log("otherProps", otherProps);
-
   interface BaseProps {
     firstProp: any[] | null;
     secondProp: any[] | null;
