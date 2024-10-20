@@ -9,6 +9,7 @@ import buildOtherVariants from "./buildOterVariants";
 import buildHeader from "./buildHeader";
 import { getBaseProps } from "./getBaseProps";
 import { placeResultTopRight } from "./utilityFunctions";
+import { buildBooleans } from "./buildBooleans";
 
 const loadFonts = async (font?: any) => {
   await figma.loadFontAsync(
@@ -37,6 +38,7 @@ export default async function buildOneSticker(
   const componentProps = getComponentProps(mainComponent);
   const { stateProps, typeProps, sizeProps, binaryProps, allOtherProps } =
     getProps(componentProps);
+  const booleanProps = componentProps.boolean;
   const baseProps = getBaseProps(typeProps, stateProps, allOtherProps);
 
   let defaultVariant: ComponentNode;
@@ -47,7 +49,7 @@ export default async function buildOneSticker(
   }
 
   const stickerFrame = buildStickerFrame();
-  const headerFrame = buildHeader();
+  const headerFrame = buildHeader(mainComponent.name);
 
   stickerFrame.appendChild(headerFrame);
   headerFrame.layoutSizingHorizontal = "FILL";
@@ -59,6 +61,8 @@ export default async function buildOneSticker(
   const binaryFrames = binaryProps.length
     ? buildBinariesGrids(defaultVariant, binaryProps)
     : null;
+
+  buildBooleans(defaultVariant, booleanProps);
 
   const basicGrid = baseProps
     ? buildBasicGrid(
@@ -88,6 +92,7 @@ export default async function buildOneSticker(
   }
 
   stickerSheetPage.appendChild(stickerFrame);
+  figma.currentPage = stickerSheetPage;
   placeResultTopRight(stickerFrame, stickerSheetPage);
 }
 

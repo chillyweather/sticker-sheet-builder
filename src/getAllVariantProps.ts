@@ -39,5 +39,11 @@ export function getProps(componentProps: any) {
       allOtherProps.push([prop, variantProps[prop]]);
     }
   }
-  return { stateProps, typeProps, sizeProps, binaryProps, allOtherProps };
+  return {
+    stateProps,
+    typeProps,
+    sizeProps,
+    binaryProps,
+    allOtherProps,
+  };
 }

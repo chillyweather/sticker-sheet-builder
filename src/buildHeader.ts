@@ -1,10 +1,10 @@
 import { h } from "preact";
 import { buildAutoLayoutFrame } from "./utilityFunctions";
 import arrowVN from "./arrow";
-export default function buildHeader() {
+export default function buildHeader(name: string) {
   const headerFrame = buildHeaderFrame();
 
-  buildTitleFrame(headerFrame);
+  buildTitleFrame(headerFrame, name);
   buildInfoFrame(headerFrame);
   buildDividerFrame(headerFrame);
   buildBackToIndexFrame(headerFrame);
@@ -17,10 +17,10 @@ function buildHeaderFrame() {
   return frame;
 }
 
-function buildTitleFrame(parent: FrameNode) {
+function buildTitleFrame(parent: FrameNode, stickerName: string) {
   const frame = buildAutoLayoutFrame("Title", "HORIZONTAL", 0, 0, 4);
   const titleText = figma.createText();
-  titleText.characters = "title";
+  titleText.characters = stickerName;
   titleText.textCase = "UPPER";
   titleText.fontName = { family: "Inter", style: "Bold" };
   titleText.fontSize = 64;

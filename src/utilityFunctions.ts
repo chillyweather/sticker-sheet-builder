@@ -30,6 +30,27 @@ export function setVariantProps(
   }
 }
 
+export function setBooleanProps(
+  element: InstanceNode,
+  name: string,
+  value: boolean
+) {
+  const propList = element.componentProperties;
+  for (const property in propList) {
+    if (property.includes(`${name}`)) {
+      try {
+        const newProps: any = {};
+        newProps[property] = value;
+        element.setProperties(newProps);
+      } catch (error) {
+        console.log(
+          `error :>> node with property ${property} and value ${value} doesn't exist on node ${element}`
+        );
+      }
+    }
+  }
+}
+
 export function buildAutoLayoutFrame(
   name: string,
   direction: "NONE" | "HORIZONTAL" | "VERTICAL",
