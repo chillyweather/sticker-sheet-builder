@@ -1,15 +1,16 @@
-import { buildAutoLayoutFrame } from "./utilityFunctions";
-import { getProps } from "./getAllVariantProps";
-import { getComponentProps } from "./getComponentProps";
-import { getMainComponent } from "./getMainComponent";
-import buildBasicGrid from "./buildBasicGrid";
 import buildSizes from "./buildSizes";
 import buildBinariesGrids from "./buildBinariesGrid";
 import buildOtherVariants from "./buildOterVariants";
 import buildHeader from "./buildHeader";
 import { getBaseProps } from "./getBaseProps";
+import { buildAutoLayoutFrame } from "./utilityFunctions";
+import { getProps } from "./getAllVariantProps";
+import { getComponentProps } from "./getComponentProps";
+import { getMainComponent } from "./getMainComponent";
+import buildBasicGrid from "./buildBasicGrid";
 import { placeResultTopRight } from "./utilityFunctions";
 import { buildBooleans } from "./buildBooleans";
+import { checkOrAddIndex } from "./checkOrAddIndex";
 
 const loadFonts = async (font?: any) => {
   await figma.loadFontAsync(
@@ -98,9 +99,70 @@ export default async function buildOneSticker(
     if (basicGrid) stickerFrame.appendChild(basicGrid);
   }
 
+  appendToStickerSheetPage(stickerSheetPage, stickerFrame, node.name);
+}
+
+function appendToStickerSheetPage(
+  stickerSheetPage: PageNode,
+  stickerFrame: FrameNode,
+  elementName: string
+) {
   stickerSheetPage.appendChild(stickerFrame);
   figma.currentPage = stickerSheetPage;
+  addToIndex(stickerSheetPage, elementName, stickerFrame);
   placeResultTopRight(stickerFrame, stickerSheetPage);
+}
+
+function addToIndex(
+  stickerSheetPage: PageNode,
+  elementName: string,
+  stickerFrame: FrameNode
+) {
+  const indexFrame = checkOrAddIndex(stickerSheetPage);
+  const indexEntry = figma.createText();
+  const indexEntryFrame = buildAutoLayoutFrame(
+    ".⛔️ Stickersheet-index",
+    "VERTICAL",
+    24,
+    24,
+    12
+  );
+  indexEntryFrame.fills = [
+    {
+      type: "SOLID",
+      visible: true,
+      opacity: 1,
+      blendMode: "NORMAL",
+      color: {
+        r: 0.9490196108818054,
+        g: 0.9490196108818054,
+        b: 0.9607843160629272,
+      },
+      boundVariables: {
+        // color: {
+        //   type: "VARIABLE_ALIAS",
+        //   id: "VariableID:9e4cc305127202bf00194a01d9487ab24d5fced3/722:32",
+        // },
+      },
+    },
+  ];
+  indexEntryFrame.appendChild(indexEntry);
+  indexEntry.characters = "↪ " + elementName;
+  indexEntry.fontName = {
+    family: "Inter",
+    style: "Medium",
+  };
+  indexEntry.fontSize = 20;
+  indexEntry.hyperlink = { type: "NODE", value: stickerFrame.id };
+  const backToIndex = stickerFrame.findOne(
+    (node) => node.name === "Back to index"
+  );
+  if (backToIndex && backToIndex.type === "TEXT") {
+    backToIndex.hyperlink = { type: "NODE", value: indexFrame.id };
+  }
+  indexFrame.appendChild(indexEntryFrame);
+  indexEntryFrame.layoutSizingHorizontal = "FILL";
+  return indexFrame;
 }
 
 function buildStickerFrame() {
