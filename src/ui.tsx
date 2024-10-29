@@ -8,11 +8,9 @@ import { emit } from "@create-figma-plugin/utilities";
 import { h } from "preact";
 import { useCallback } from "preact/hooks";
 
-import { GetHandler } from "./types";
-
 function Plugin() {
   const handleCloseButtonClick = useCallback(function () {
-    emit<GetHandler>("CLOSE");
+    emit("GET");
   }, []);
   return (
     <Container space="medium">

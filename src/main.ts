@@ -1,10 +1,9 @@
 import { on, showUI } from "@create-figma-plugin/utilities";
 
-import { GetHandler } from "./types";
 import buildOneSticker from "./buildOneSticker";
 
 export default function () {
-  on<GetHandler>("CLOSE", function () {
+  on("GET", function () {
     const selection = figma.currentPage.selection;
     if (!selection.length) return;
     for (const node of selection) {

@@ -99,8 +99,10 @@ export default async function buildOneSticker(
     if (basicGrid) stickerFrame.appendChild(basicGrid);
   }
 
-  appendToStickerSheetPage(stickerSheetPage, stickerFrame, node.name);
+  appendToStickerSheetPage(stickerSheetPage, stickerFrame, mainComponent.name);
 }
+
+//test
 
 function appendToStickerSheetPage(
   stickerSheetPage: PageNode,
