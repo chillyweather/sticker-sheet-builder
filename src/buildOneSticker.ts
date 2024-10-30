@@ -103,8 +103,6 @@ export default async function buildOneSticker(
   appendToStickerSheetPage(stickerSheetPage, stickerFrame, mainComponent.name);
 }
 
-//test
-
 function appendToStickerSheetPage(
   stickerSheetPage: PageNode,
   stickerFrame: FrameNode,
