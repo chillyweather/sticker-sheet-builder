@@ -11,6 +11,7 @@ import buildBasicGrid from "./buildBasicGrid";
 import { placeResultTopRight } from "./utilityFunctions";
 import { buildBooleans } from "./buildBooleans";
 import { checkOrAddIndex } from "./checkOrAddIndex";
+import { lockStickers } from "./lockStickers";
 
 const loadFonts = async (font?: any) => {
   await figma.loadFontAsync(
@@ -113,6 +114,7 @@ function appendToStickerSheetPage(
   figma.currentPage = stickerSheetPage;
   addToIndex(stickerSheetPage, elementName, stickerFrame);
   placeResultTopRight(stickerFrame, stickerSheetPage);
+  lockStickers(stickerFrame);
 }
 
 function addToIndex(
