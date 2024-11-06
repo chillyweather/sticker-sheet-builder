@@ -22,16 +22,35 @@ export default function () {
   });
   on("BUILD_All", function () {
     const atomPages = findAtomPages();
-    const components: ComponentNode[] | ComponentSetNode[] = [];
-    atomPages.forEach((page) => {
-      console.log(page.name);
-    });
+    const foundComponents = getComponentsFromPage(atomPages);
+    foundComponents.forEach((comp: any) => buildOneSticker(comp));
   });
   showUI({
     height: 112,
     width: 240,
   });
 }
+function getComponentsFromPage(atomPages: PageNode[]) {
+  const components: any = [];
+  atomPages.forEach((page) => {
+    console.log(page.name);
+  });
+  for (const page of atomPages) {
+    const componentsAndSets = page.findAllWithCriteria({
+      types: ["COMPONENT", "COMPONENT_SET"],
+    });
+    componentsAndSets.forEach((item) => {
+      if (
+        !item.name.startsWith(".") &&
+        item.description.toLowerCase().includes("misprint")
+      ) {
+        components.push(item);
+      }
+    });
+  }
+  return components;
+}
+
 function findAtomPages() {
   const pages = figma.root.children;
   const atomsTitleIndex = pages.findIndex((page) =>
