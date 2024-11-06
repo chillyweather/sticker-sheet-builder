@@ -20,7 +20,7 @@ export default function () {
       }
     }
   });
-  on("BUILD_All", function () {
+  on("BUILD_ALL", function () {
     const atomPages = findAtomPages();
     const foundComponents = getComponentsFromPage(atomPages);
     foundComponents.forEach((comp: any) => buildOneSticker(comp));

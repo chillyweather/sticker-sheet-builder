@@ -13,7 +13,7 @@ function Plugin() {
     emit("BUILD_ONE");
   }, []);
   const hanleBuildAllClick = useCallback(function () {
-    emit("BUILD_All");
+    emit("BUILD_ALL");
   }, []);
   return (
     <Container space="medium">
