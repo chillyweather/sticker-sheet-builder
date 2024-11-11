@@ -12,6 +12,7 @@ import { placeResultTopRight } from "./utilityFunctions";
 import { buildBooleans } from "./buildBooleans";
 import { checkOrAddIndex } from "./checkOrAddIndex";
 import { lockStickers } from "./lockStickers";
+import { getRaster } from "./makeRaster";
 
 const loadFonts = async (font?: any) => {
   await figma.loadFontAsync(
@@ -49,6 +50,8 @@ export default async function buildOneSticker(
   } else {
     defaultVariant = mainComponent.defaultVariant;
   }
+
+  const raster = await getRaster(defaultVariant);
 
   const stickerFrame = buildStickerFrame();
   const headerFrame = buildHeader(mainComponent.name);
@@ -100,17 +103,23 @@ export default async function buildOneSticker(
     if (basicGrid) stickerFrame.appendChild(basicGrid);
   }
 
-  appendToStickerSheetPage(stickerSheetPage, stickerFrame, mainComponent.name);
+  appendToStickerSheetPage(
+    stickerSheetPage,
+    stickerFrame,
+    mainComponent.name,
+    raster
+  );
 }
 
 function appendToStickerSheetPage(
   stickerSheetPage: PageNode,
   stickerFrame: FrameNode,
-  elementName: string
+  elementName: string,
+  raster: FrameNode
 ) {
   stickerSheetPage.appendChild(stickerFrame);
   figma.currentPage = stickerSheetPage;
-  addToIndex(stickerSheetPage, elementName, stickerFrame);
+  addToIndex(stickerSheetPage, elementName, stickerFrame, raster);
   placeResultTopRight(stickerFrame, stickerSheetPage);
   lockStickers(stickerFrame);
 }
@@ -118,7 +127,8 @@ function appendToStickerSheetPage(
 function addToIndex(
   stickerSheetPage: PageNode,
   elementName: string,
-  stickerFrame: FrameNode
+  stickerFrame: FrameNode,
+  raster: FrameNode
 ) {
   const indexFrame = checkOrAddIndex(stickerSheetPage);
   const indexEntry = figma.createText();
@@ -140,14 +150,12 @@ function addToIndex(
         g: 0.9490196108818054,
         b: 0.9607843160629272,
       },
-      boundVariables: {
-        // color: {
-        //   type: "VARIABLE_ALIAS",
-        //   id: "VariableID:9e4cc305127202bf00194a01d9487ab24d5fced3/722:32",
-        // },
-      },
+      boundVariables: {},
     },
   ];
+  const wrappedRaster = wrapImage(raster);
+  indexEntryFrame.appendChild(wrappedRaster);
+  wrappedRaster.layoutSizingHorizontal = "FILL";
   indexEntryFrame.appendChild(indexEntry);
   indexEntry.characters = "↪ " + elementName;
   indexEntry.fontName = {
@@ -165,6 +173,33 @@ function addToIndex(
   indexFrame.appendChild(indexEntryFrame);
   indexEntryFrame.layoutSizingHorizontal = "FILL";
   return indexFrame;
+}
+
+function wrapImage(image: FrameNode) {
+  const frame = buildAutoLayoutFrame("wrapper", "VERTICAL", 60, 60, 60);
+  frame.paddingTop = 24;
+  frame.paddingBottom = 24;
+  frame.paddingLeft = 24;
+  frame.paddingRight = 24;
+  frame.cornerRadius = 8;
+  frame.fills = [
+    {
+      type: "SOLID",
+      visible: true,
+      opacity: 1,
+      blendMode: "NORMAL",
+      color: {
+        r: 1,
+        g: 1,
+        b: 1,
+      },
+      boundVariables: {},
+    },
+  ];
+  frame.appendChild(image);
+  frame.primaryAxisAlignItems = "CENTER";
+  frame.counterAxisAlignItems = "CENTER";
+  return frame;
 }
 
 function buildStickerFrame() {
