@@ -3,6 +3,10 @@ import { on, showUI } from "@create-figma-plugin/utilities";
 import buildOneSticker from "./buildOneSticker";
 
 export default function () {
+  //TODO check if sticker page exists
+  //TODO send notification if there is one
+  //TODO check
+  //TODO add functionality for rebuilding all stickers
   on("BUILD_ONE", function () {
     const selection = figma.currentPage.selection;
     if (!selection.length) return;
@@ -20,10 +24,12 @@ export default function () {
       }
     }
   });
-  on("BUILD_ALL", function () {
+  on("BUILD_ALL", async function () {
     const atomPages = findAtomPages();
     const foundComponents = getComponentsFromPage(atomPages);
-    foundComponents.forEach((comp: any) => buildOneSticker(comp));
+    for (const comp of foundComponents) {
+      await buildOneSticker(comp);
+    }
   });
   showUI({
     height: 112,
@@ -42,7 +48,7 @@ function getComponentsFromPage(atomPages: PageNode[]) {
     componentsAndSets.forEach((item) => {
       if (
         !item.name.startsWith(".") &&
-        item.description.toLowerCase().includes("misprint")
+        item.description.toLowerCase().includes("ℹ️")
       ) {
         components.push(item);
       }

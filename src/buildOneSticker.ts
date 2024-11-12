@@ -53,7 +53,7 @@ export default async function buildOneSticker(
 
   const raster = await getRaster(defaultVariant);
 
-  const stickerFrame = buildStickerFrame();
+  const stickerFrame = buildStickerFrame(mainComponent.name);
   const headerFrame = buildHeader(mainComponent.name);
 
   stickerFrame.appendChild(headerFrame);
@@ -202,8 +202,8 @@ function wrapImage(image: FrameNode) {
   return frame;
 }
 
-function buildStickerFrame() {
-  const frame = buildAutoLayoutFrame("REPLACE ME!!!", "VERTICAL", 60, 60, 60);
+function buildStickerFrame(name: string) {
+  const frame = buildAutoLayoutFrame(name, "VERTICAL", 60, 60, 60);
   frame.paddingTop = 24;
   frame.cornerRadius = 40;
   return frame;
