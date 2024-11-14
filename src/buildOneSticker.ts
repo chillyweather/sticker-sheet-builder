@@ -1,3 +1,4 @@
+import { loadFonts } from "./loadFonts";
 import buildSizes from "./buildSizes";
 import buildBinariesGrids from "./buildBinariesGrid";
 import buildOtherVariants from "./buildOterVariants";
@@ -13,23 +14,12 @@ import { buildBooleans } from "./buildBooleans";
 import { checkOrAddIndex } from "./checkOrAddIndex";
 import { lockStickers } from "./lockStickers";
 import { getRaster } from "./makeRaster";
-
-const loadFonts = async (font?: any) => {
-  await figma.loadFontAsync(
-    font ? font : { family: "Inter", style: "Regular" }
-  );
-  await figma.loadFontAsync({ family: "Inter", style: "Regular" });
-  await figma.loadFontAsync({ family: "Inter", style: "Bold" });
-  await figma.loadFontAsync({ family: "Inter", style: "Semi Bold" });
-  await figma.loadFontAsync({ family: "Inter", style: "Medium" });
-};
+import { getStickerSheetPage } from "./findAtomPages";
 
 export default async function buildOneSticker(
   node: InstanceNode | ComponentNode | ComponentSetNode
 ) {
-  await loadFonts();
-
-  const stickerSheetPage = findOrAddStickerSheetPage();
+  const stickerSheetPage = getStickerSheetPage();
 
   const mainComponent = await getMainComponent(node);
 
@@ -207,17 +197,4 @@ function buildStickerFrame(name: string) {
   frame.paddingTop = 24;
   frame.cornerRadius = 40;
   return frame;
-}
-
-function findOrAddStickerSheetPage() {
-  const pages = figma.root.children;
-
-  const found = pages.find((page) => page.name === "Stickersheet");
-  if (!found) {
-    let stickerSheetPage = figma.createPage();
-    figma.root.insertChild(0, stickerSheetPage);
-    stickerSheetPage.name = "Stickersheet";
-    return stickerSheetPage;
-  }
-  return found;
 }
