@@ -1,7 +1,7 @@
 import { loadFonts } from "./loadFonts";
 import buildSizes from "./buildSizes";
 import buildBinariesGrids from "./buildBinariesGrid";
-import buildOtherVariants from "./buildOterVariants";
+import buildOtherVariants from "./buildOtherVariants";
 import buildHeader from "./buildHeader";
 import { getBaseProps } from "./getBaseProps";
 import { buildAutoLayoutFrame } from "./utilityFunctions";
@@ -15,6 +15,7 @@ import { checkOrAddIndex } from "./checkOrAddIndex";
 import { lockStickers } from "./lockStickers";
 import { getRaster } from "./makeRaster";
 import { getStickerSheetPage } from "./findAtomPages";
+import { emit } from "@create-figma-plugin/utilities";
 
 export default async function buildOneSticker(
   node: InstanceNode | ComponentNode | ComponentSetNode
@@ -22,6 +23,7 @@ export default async function buildOneSticker(
   const stickerSheetPage = getStickerSheetPage();
 
   const mainComponent = await getMainComponent(node);
+  // emit("NOW_BUILDING", mainComponent?.name);
 
   if (!mainComponent) {
     figma.notify("MAIN COMPONENT IS NOT FOUND", { error: true });
@@ -44,7 +46,27 @@ export default async function buildOneSticker(
   const raster = await getRaster(defaultVariant);
 
   const stickerFrame = buildStickerFrame(mainComponent.name);
-  const headerFrame = buildHeader(mainComponent.name);
+
+  const getComponentDescription = (fullDescription: string) => {
+    console.log("fullDescription", fullDescription);
+    const defaultDescription = "Some optional additional info about component";
+    if (!fullDescription.length) return defaultDescription;
+
+    const descriptionArray = fullDescription.split("\n");
+    console.log("descriptionArray", descriptionArray);
+    const infoIconIndex = descriptionArray.findIndex(
+      (symbol) => symbol === "ℹ️"
+    );
+    console.log("infoIconIndex", infoIconIndex);
+    const foundDescription = descriptionArray[infoIconIndex + 1];
+    console.log("foundDescription", foundDescription);
+    return foundDescription;
+  };
+
+  const headerFrame = buildHeader(
+    mainComponent.name,
+    getComponentDescription(mainComponent.description)
+  );
 
   stickerFrame.appendChild(headerFrame);
   headerFrame.layoutSizingHorizontal = "FILL";

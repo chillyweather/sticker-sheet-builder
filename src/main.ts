@@ -31,6 +31,7 @@ export default async function () {
         });
       }
     }
+    emit("BUILT");
   });
 
   on("BUILD_ALL", async function () {
@@ -41,10 +42,11 @@ export default async function () {
     for (const comp of foundComponents) {
       await buildOneSticker(comp);
     }
+    emit("BUILT");
   });
 }
 showUI({
-  height: 112,
+  height: 252,
   width: 240,
 });
 function checkAndReportStickerPage() {

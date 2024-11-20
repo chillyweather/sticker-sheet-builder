@@ -1,11 +1,13 @@
 import { h } from "preact";
 import { buildAutoLayoutFrame } from "./utilityFunctions";
 import arrowVN from "./arrow";
-export default function buildHeader(name: string) {
+export default function buildHeader(name: string, description: string) {
   const headerFrame = buildHeaderFrame();
 
   buildTitleFrame(headerFrame, name);
-  buildInfoFrame(headerFrame);
+  const infoFrame = buildInfoFrame(headerFrame, description);
+  infoFrame.resize(520, infoFrame.height);
+  infoFrame.layoutSizingVertical = "HUG";
   buildDividerFrame(headerFrame);
   buildBackToIndexFrame(headerFrame);
 
@@ -28,11 +30,11 @@ function buildTitleFrame(parent: FrameNode, stickerName: string) {
   parent.appendChild(frame);
 }
 
-function buildInfoFrame(parent: FrameNode) {
+function buildInfoFrame(parent: FrameNode, description: string) {
   const frame = buildAutoLayoutFrame("Info", "HORIZONTAL", 0, 0, 8);
   frame.counterAxisAlignItems = "CENTER";
   buildInfoIcon();
-  buildText();
+  buildText(description);
   buildLink();
 
   parent.appendChild(frame);
@@ -85,7 +87,6 @@ function buildInfoFrame(parent: FrameNode) {
     link.characters = "link";
     link.fontName = { family: "Inter", style: "Medium" };
     link.fontSize = 14;
-    // link.hyperlink = { type: "URL", value: "https://www.figma.com/" };
     link.textDecoration = "UNDERLINE";
     link.fills = [
       {
@@ -104,13 +105,16 @@ function buildInfoFrame(parent: FrameNode) {
     frame.appendChild(link);
   }
 
-  function buildText() {
+  function buildText(desription: string) {
     const infoText = figma.createText();
-    infoText.characters = "Some optional additional info about component";
+    infoText.characters = desription;
     infoText.fontName = { family: "Inter", style: "Medium" };
     infoText.fontSize = 14;
     frame.appendChild(infoText);
+    infoText.textAutoResize = "HEIGHT";
+    infoText.layoutSizingHorizontal = "FILL";
   }
+  return frame;
 }
 
 function buildDividerFrame(parent: FrameNode) {

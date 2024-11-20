@@ -29,7 +29,10 @@ export function buildBooleans(
         return hasProperty;
       });
 
-      if (found) workingNode = (found as ComponentNode).createInstance();
+      if (found) {
+        workingNode.remove();
+        workingNode = (found as ComponentNode).createInstance();
+      }
     }
 
     const cleanPropName = prop.split("#")[0];
