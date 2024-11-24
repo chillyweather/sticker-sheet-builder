@@ -8,6 +8,7 @@ import {
 } from "./findAtomPages";
 import { findStickerSheetPage } from "./findAtomPages";
 import { loadFonts } from "./loadFonts";
+import { lockStickers } from "./lockStickers";
 
 export default async function () {
   await loadFonts();
@@ -15,7 +16,9 @@ export default async function () {
   figma.on("run", checkAndReportStickerPage);
   figma.on("currentpagechange", checkAndReportStickerPage);
 
-  on("BUILD_ONE", function () {
+  const stickers: FrameNode[] = [];
+
+  on("BUILD_ONE", async function () {
     const selection = figma.currentPage.selection;
     if (!selection.length) return;
     for (const node of selection) {
@@ -24,12 +27,19 @@ export default async function () {
         node.type === "COMPONENT_SET" ||
         node.type === "INSTANCE"
       ) {
-        buildOneSticker(node);
+        await buildOneSticker(node);
       } else {
         figma.notify("Please select an instance, component, or component set", {
           error: true,
         });
       }
+    }
+    const stickerSheetPage = getStickerSheetPage();
+    const sections = stickerSheetPage?.findChild(
+      (frame) => frame.name === "Sections"
+    );
+    if (sections) {
+      lockStickers(sections as FrameNode);
     }
     emit("BUILT");
   });
@@ -41,6 +51,13 @@ export default async function () {
     const foundComponents = getComponentsFromPage(atomPages);
     for (const comp of foundComponents) {
       await buildOneSticker(comp);
+    }
+
+    const sections = stickerSheetPage?.findChild(
+      (frame) => frame.name === "Sections"
+    );
+    if (sections) {
+      lockStickers(sections as FrameNode);
     }
     emit("BUILT");
   });

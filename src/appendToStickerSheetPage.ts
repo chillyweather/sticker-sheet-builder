@@ -20,7 +20,6 @@ export function appendToStickerSheetPage(
   currentSectionFrame.appendChild(stickerFrame);
 
   // placeResultTopRight(stickerFrame, stickerSheetPage);
-  // lockStickers(stickerFrame);
 }
 
 function findOrCreateAllSectionsFrame() {
