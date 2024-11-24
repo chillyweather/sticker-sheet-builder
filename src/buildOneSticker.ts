@@ -9,13 +9,12 @@ import { getProps } from "./getAllVariantProps";
 import { getComponentProps } from "./getComponentProps";
 import { getMainComponent } from "./getMainComponent";
 import buildBasicGrid from "./buildBasicGrid";
-import { placeResultTopRight } from "./utilityFunctions";
 import { buildBooleans } from "./buildBooleans";
 import { checkOrAddIndex } from "./checkOrAddIndex";
-import { lockStickers } from "./lockStickers";
 import { getRaster } from "./makeRaster";
 import { getStickerSheetPage } from "./findAtomPages";
 import { emit } from "@create-figma-plugin/utilities";
+import { appendToStickerSheetPage } from "./appendToStickerSheetPage";
 
 export default async function buildOneSticker(
   node: InstanceNode | ComponentNode | ComponentSetNode
@@ -48,18 +47,14 @@ export default async function buildOneSticker(
   const stickerFrame = buildStickerFrame(mainComponent.name);
 
   const getComponentDescription = (fullDescription: string) => {
-    console.log("fullDescription", fullDescription);
     const defaultDescription = "Some optional additional info about component";
     if (!fullDescription.length) return defaultDescription;
 
     const descriptionArray = fullDescription.split("\n");
-    console.log("descriptionArray", descriptionArray);
     const infoIconIndex = descriptionArray.findIndex(
       (symbol) => symbol === "ℹ️"
     );
-    console.log("infoIconIndex", infoIconIndex);
     const foundDescription = descriptionArray[infoIconIndex + 1];
-    console.log("foundDescription", foundDescription);
     return foundDescription;
   };
 
@@ -118,25 +113,12 @@ export default async function buildOneSticker(
   appendToStickerSheetPage(
     stickerSheetPage,
     stickerFrame,
-    mainComponent.name,
+    mainComponent,
     raster
   );
 }
 
-function appendToStickerSheetPage(
-  stickerSheetPage: PageNode,
-  stickerFrame: FrameNode,
-  elementName: string,
-  raster: FrameNode
-) {
-  stickerSheetPage.appendChild(stickerFrame);
-  figma.currentPage = stickerSheetPage;
-  addToIndex(stickerSheetPage, elementName, stickerFrame, raster);
-  placeResultTopRight(stickerFrame, stickerSheetPage);
-  lockStickers(stickerFrame);
-}
-
-function addToIndex(
+export function addToIndex(
   stickerSheetPage: PageNode,
   elementName: string,
   stickerFrame: FrameNode,

@@ -79,9 +79,8 @@ function buildStates(
     0,
     20
   );
-  const title = currentFirstProp
-    ? createSubSectionTitle(currentFirstProp)
-    : null;
+  const titleLabel = firstPropName + " - " + currentFirstProp;
+  const title = currentFirstProp ? createSubSectionTitle(titleLabel) : null;
   if (title) stateWithTitle.appendChild(title);
   const elementsFrame = createNormalizedFrame(
     "elements-frame",
