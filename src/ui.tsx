@@ -12,6 +12,7 @@ import { Spinner } from "./spinner";
 function Plugin() {
   const [stickersheetExists, setStickersheetExists] = useState(false);
   const [isBuilding, setIsBuilding] = useState(false);
+  const [isValidSelection, setIsValidSelection] = useState(false);
   // const [nowBuilding, setNowBuilding] = useState("...");
   const hanleBuildOneClick = useCallback(function () {
     setIsBuilding(true);
@@ -32,10 +33,14 @@ function Plugin() {
   });
 
   on("BUILT", () => setIsBuilding(false));
-  // on("NOW_BUILDING", (data) => {
-  //   setIsBuilding(true);
-  //   setNowBuilding(data);
-  // });
+
+  on("VALID_SELECTION", () => {
+    setIsValidSelection(true);
+  });
+
+  on("INVALID_SELECTION", () => {
+    setIsValidSelection(false);
+  });
 
   return (
     <Container space="medium">
@@ -52,6 +57,7 @@ function Plugin() {
             onClick={hanleBuildOneClick}
             secondary
             style={{ backgroundColor: "#5ffe84", border: "none" }}
+            disabled={!isValidSelection}
           >
             Build one sticker
           </Button>

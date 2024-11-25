@@ -15,6 +15,28 @@ export default async function () {
 
   figma.on("run", checkAndReportStickerPage);
   figma.on("currentpagechange", checkAndReportStickerPage);
+  figma.on("selectionchange", () => {
+    if (isValidSelection()) {
+      emit("VALID_SELECTION");
+    } else {
+      emit("INVALID_SELECTION");
+    }
+  });
+
+  function isValidSelection() {
+    const selection = figma.currentPage.selection;
+    if (selection.length === 1) {
+      const node = selection[0];
+      if (
+        node.type === "COMPONENT" ||
+        node.type === "COMPONENT_SET" ||
+        node.type === "INSTANCE"
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   const stickers: FrameNode[] = [];
 
