@@ -15,6 +15,7 @@ import { getRaster } from "./makeRaster";
 import { getStickerSheetPage } from "./findAtomPages";
 import { emit } from "@create-figma-plugin/utilities";
 import { appendToStickerSheetPage } from "./appendToStickerSheetPage";
+import { parseComponentDescription } from "./parseDescription";
 
 export default async function buildOneSticker(
   node: InstanceNode | ComponentNode | ComponentSetNode
@@ -28,6 +29,8 @@ export default async function buildOneSticker(
     figma.notify("MAIN COMPONENT IS NOT FOUND", { error: true });
     return null;
   }
+
+  const description = parseComponentDescription(mainComponent.description);
 
   const componentProps = getComponentProps(mainComponent);
   const { stateProps, typeProps, sizeProps, binaryProps, allOtherProps } =
@@ -60,7 +63,8 @@ export default async function buildOneSticker(
 
   const headerFrame = buildHeader(
     mainComponent.name,
-    getComponentDescription(mainComponent.description)
+    getComponentDescription(mainComponent.description),
+    description
   );
 
   stickerFrame.appendChild(headerFrame);

@@ -9,6 +9,7 @@ import {
 import { findStickerSheetPage } from "./findAtomPages";
 import { loadFonts } from "./loadFonts";
 import { lockStickers } from "./lockStickers";
+import { parseComponentDescription } from "./parseDescription";
 
 export default async function () {
   await loadFonts();
@@ -82,6 +83,14 @@ export default async function () {
       lockStickers(sections as FrameNode);
     }
     emit("BUILT");
+  });
+
+  on("PARSE_DESCRIPTION", () => {
+    if (isValidSelection()) {
+      parseComponentDescription(
+        (figma.currentPage.selection[0] as ComponentSetNode).description
+      );
+    }
   });
 }
 showUI({

@@ -1,6 +1,10 @@
-interface ComponentDescription {
+interface DescriptionSection {
+  [key: string]: string;
+}
+export interface ComponentDescription {
   misprint: string;
   tags: string[];
+  sections: DescriptionSection[];
 }
 
 export function parseComponentDescription(
@@ -11,6 +15,7 @@ export function parseComponentDescription(
     return {
       misprint: "",
       tags: [],
+      sections: [],
     };
   }
 
@@ -18,19 +23,28 @@ export function parseComponentDescription(
   const result: ComponentDescription = {
     misprint: "",
     tags: [],
+    sections: [],
   };
 
-  const misprintString =
-    arr.find((string) => string.toLowerCase().startsWith("misprint")) ?? "";
-  const tags = arr.find((string) => string.startsWith("#"))?.split("\n") ?? [];
+  for (const element of arr) {
+    if (element.toLowerCase().startsWith("misprint")) {
+      result.misprint = element;
+    } else if (element.startsWith("#")) {
+      const elementTags = element.split(/\s+/);
+      elementTags.forEach((tag) => result.tags.push(tag));
+    } else {
+      const sectionData = splitDescription(element);
+      result.sections.push(sectionData);
+    }
+  }
 
-  result.misprint = misprintString;
-  result.tags = tags;
-
-  console.log("🔵", arr);
-  console.log("🟠", result.misprint);
-  console.log("🟢", tags);
   console.log("🟥⬜️🟥⬜️🟥", result);
 
+  return result;
+}
+function splitDescription(description: string): DescriptionSection {
+  const [title, ...contentParts] = description.split("\n");
+  const result: DescriptionSection = {};
+  result[title || ""] = contentParts.join("\n") || "";
   return result;
 }
