@@ -2,6 +2,7 @@ import { h } from "preact";
 import { buildAutoLayoutFrame } from "./utilityFunctions";
 import arrowVN from "./arrow";
 import { ComponentDescription } from "./parseDescription";
+import { findDescriptionSection } from "./findDescriptionSection";
 export default function buildHeader(
   name: string,
   descriptionText: string,
@@ -35,13 +36,16 @@ function buildTitleFrame(parent: FrameNode, stickerName: string) {
   parent.appendChild(frame);
 }
 
-function findDescriptionSection();
-
 function buildInfoFrame(parent: FrameNode, description: ComponentDescription) {
   const frame = buildAutoLayoutFrame("Info", "HORIZONTAL", 0, 0, 8);
   frame.counterAxisAlignItems = "CENTER";
   buildInfoIcon();
-  buildText(description);
+  const elementDescription = findDescriptionSection(
+    "ℹ️",
+    description,
+    "Add element description"
+  );
+  buildText(elementDescription);
   buildLink();
 
   parent.appendChild(frame);

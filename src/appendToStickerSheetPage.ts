@@ -3,6 +3,7 @@ import { lockStickers } from "./lockStickers";
 import { placeResultTopRight } from "./utilityFunctions";
 import { buildAutoLayoutFrame } from "./utilityFunctions";
 import { SECTION_FILL } from "./constants";
+import { findDescriptionSection } from "./findDescriptionSection";
 
 export function appendToStickerSheetPage(
   stickerSheetPage: PageNode,
