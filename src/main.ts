@@ -9,7 +9,6 @@ import {
 import { findStickerSheetPage } from "./findAtomPages";
 import { loadFonts } from "./loadFonts";
 import { lockStickers } from "./lockStickers";
-import { parseComponentDescription } from "./parseDescription";
 
 export default async function () {
   await loadFonts();
