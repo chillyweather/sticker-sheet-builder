@@ -4,18 +4,24 @@ import { placeResultTopRight } from "./utilityFunctions";
 import { buildAutoLayoutFrame } from "./utilityFunctions";
 import { SECTION_FILL } from "./constants";
 import { findDescriptionSection } from "./findDescriptionSection";
+import { ComponentDescription } from "./parseDescription";
 
 export function appendToStickerSheetPage(
   stickerSheetPage: PageNode,
   stickerFrame: FrameNode,
   element: ComponentNode | ComponentSetNode,
-  raster: FrameNode
+  raster: FrameNode,
+  description: ComponentDescription
 ) {
   figma.currentPage = stickerSheetPage;
 
   addToIndex(stickerSheetPage, element.name, stickerFrame, raster);
 
-  const currentSectionName = findCurrentSectionName(element);
+  const currentSectionName = findDescriptionSection(
+    "🗂️",
+    description,
+    "Unknown section"
+  );
   const currentSectionFrame =
     findOrCreateCurrentSectionFrame(currentSectionName);
   currentSectionFrame.appendChild(stickerFrame);
@@ -93,12 +99,13 @@ function buildSectionTitle(sectionName: string) {
   newSectionTitle.textCase = "UPPER";
   return newSectionTitle;
 }
-
-function findCurrentSectionName(
-  node: ComponentNode | ComponentSetNode
-): string {
-  const descriptionArray = node.description.split("\n");
-  const docIndex = descriptionArray.findIndex((line) => line.startsWith("🗂️"));
-  const currentSection = descriptionArray[docIndex + 1];
-  return currentSection;
-}
+//
+// function findCurrentSectionName(
+//   node: ComponentNode | ComponentSetNode,
+//   description: ComponentDescription
+// ): string {
+//   const descriptionArray = node.description.split("\n");
+//   const docIndex = descriptionArray.findIndex((line) => line.startsWith("🗂️"));
+//   const currentSection = descriptionArray[docIndex + 1];
+//   return currentSection;
+// }

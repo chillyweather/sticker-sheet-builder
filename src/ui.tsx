@@ -24,10 +24,6 @@ function Plugin() {
     emit("BUILD_ALL");
   }, []);
 
-  const handleParseDescription = useCallback(function () {
-    emit("PARSE_DESCRIPTION");
-  }, []);
-
   on("STICKERSHEET_EXISTS", () => {
     setStickersheetExists(true);
   });
@@ -77,14 +73,6 @@ function Plugin() {
               : "Build Stickersheet"}
           </Button>
           <VerticalSpace space="small" />
-          <Button
-            fullWidth
-            onClick={handleParseDescription}
-            style={{ backgroundColor: "coral", border: "none" }}
-            secondary
-          >
-            Parse description
-          </Button>
         </div>
       )}
       <VerticalSpace space="small" />

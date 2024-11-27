@@ -118,7 +118,8 @@ export default async function buildOneSticker(
     stickerSheetPage,
     stickerFrame,
     mainComponent,
-    raster
+    raster,
+    description
   );
 }
 

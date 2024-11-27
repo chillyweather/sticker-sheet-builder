@@ -14,14 +14,13 @@ import { parseComponentDescription } from "./parseDescription";
 export default async function () {
   await loadFonts();
 
-  figma.on("run", checkAndReportStickerPage);
+  figma.on("run", () => {
+    checkAndReportStickerPage;
+    reportSelection(isValidSelection);
+  });
   figma.on("currentpagechange", checkAndReportStickerPage);
   figma.on("selectionchange", () => {
-    if (isValidSelection()) {
-      emit("VALID_SELECTION");
-    } else {
-      emit("INVALID_SELECTION");
-    }
+    reportSelection(isValidSelection);
   });
 
   function isValidSelection() {
@@ -61,9 +60,9 @@ export default async function () {
     const sections = stickerSheetPage?.findChild(
       (frame) => frame.name === "Sections"
     );
-    if (sections) {
-      lockStickers(sections as FrameNode);
-    }
+    // if (sections) {
+    //   lockStickers(sections as FrameNode);
+    // }
     emit("BUILT");
   });
 
@@ -84,19 +83,19 @@ export default async function () {
     }
     emit("BUILT");
   });
-
-  on("PARSE_DESCRIPTION", () => {
-    if (isValidSelection()) {
-      parseComponentDescription(
-        (figma.currentPage.selection[0] as ComponentSetNode).description
-      );
-    }
-  });
 }
 showUI({
   height: 252,
   width: 240,
 });
+function reportSelection(isValidSelection: () => boolean) {
+  if (isValidSelection()) {
+    emit("VALID_SELECTION");
+  } else {
+    emit("INVALID_SELECTION");
+  }
+}
+
 function checkAndReportStickerPage() {
   const stickerSheetPage = findStickerSheetPage();
   if (stickerSheetPage) {
